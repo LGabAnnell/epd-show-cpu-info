@@ -23,17 +23,17 @@ void curl_init() {
 }
 
 char* get(char *url, char *dataHolder) {
-
   wholeData = dataHolder;
   CURLcode res;
 
   if (!handle) { printf("CURL NOT CORRECTLY INITIALIZED"); }
 
   res = curl_easy_perform(handle);
+
   if (res != CURLE_OK) {
     return "err";
   }
-  printf("%s\n", wholeData);
+
   return "";
 }
 

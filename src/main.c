@@ -27,8 +27,8 @@ int main(void)
 {
   char *values = malloc(sizeof(char) * 300);
   curl_init();
-#if 1
   signal(SIGINT, Handler);
+#if 1
   pid_t pid, sid;
   pid = fork();
   if (pid < 0) {
@@ -50,7 +50,6 @@ int main(void)
   close(STDERR_FILENO);
 #endif
   EPD_INIT();
-
   int epd_part_refresh_init_done = 0;
   int epd_full_init_done = 0;
   char **cpuInfo = malloc(sizeof(void*) * 4);
@@ -64,10 +63,10 @@ int main(void)
     if (strcmp(res, "err") == 0) {
       if (!epd_full_init_done) {
         EPD_INIT_FULL();
+        paintImage();
         epd_full_init_done = 1;
         epd_part_refresh_init_done = 0;
       }
-      paintImage();
       sleep(5);
       continue;
     }
@@ -88,7 +87,7 @@ int main(void)
     }
 
     paintScreen(cpuInfo);
-    DEV_Delay_ms(500);
+    sleep(5);
   }
   return 0;
 }
