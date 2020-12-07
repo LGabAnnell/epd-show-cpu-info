@@ -13,16 +13,16 @@ size_t print(void *ptr, size_t size, size_t nmemb, void *_) {
   return nmemb;
 }
 
-void curl_init() {
+void curl_init(char *url) {
   curl_global_init(CURL_GLOBAL_ALL);
 
   handle = curl_easy_init();
-  curl_easy_setopt(handle, CURLOPT_URL, "http://192.168.178.21:8080");
+  curl_easy_setopt(handle, CURLOPT_URL, url);
   curl_easy_setopt(handle, CURLOPT_TIMEOUT_MS, 10000L);
   curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, print);
 }
 
-char* get(char *url, char *dataHolder) {
+char* get(char *dataHolder) {
   wholeData = dataHolder;
   CURLcode res;
 
@@ -34,7 +34,7 @@ char* get(char *url, char *dataHolder) {
     return "err";
   }
 
-  return "";
+  return "OK";
 }
 
 

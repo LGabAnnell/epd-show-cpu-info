@@ -6,11 +6,10 @@
 #include "EPD_Test.h"   //Examples
 #include "EPD_2in13_V2.h"
 
-extern char* get(char *, char *);
-extern void curl_init(void);
+extern char* get(char *);
+extern void curl_init(char *);
 extern void EPD_INIT_PART(void);
 extern void EPD_INIT_FULL(void);
-
 
 void Handler(int signo)
 {
@@ -26,7 +25,9 @@ void Handler(int signo)
 int main(void)
 {
   char *values = malloc(sizeof(char) * 300);
-  curl_init();
+
+  curl_init("http://192.168.178.21:8080");
+
   signal(SIGINT, Handler);
 #if 1
   pid_t pid, sid;
@@ -58,7 +59,7 @@ int main(void)
   }
 
   while (1) {
-    char *res = get("http://192.168.178.21:8080", values);
+    char *res = get(values);
 
     if (strcmp(res, "err") == 0) {
       if (!epd_full_init_done) {
@@ -89,5 +90,6 @@ int main(void)
     paintScreen(cpuInfo);
     sleep(5);
   }
+  free(values);
   return 0;
 }
