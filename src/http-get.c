@@ -18,7 +18,7 @@ void curl_init(char *url) {
 
   handle = curl_easy_init();
   curl_easy_setopt(handle, CURLOPT_URL, url);
-  curl_easy_setopt(handle, CURLOPT_TIMEOUT_MS, 10000L);
+  curl_easy_setopt(handle, CURLOPT_TIMEOUT_MS, 1000L);
   curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, print);
 }
 
@@ -30,7 +30,7 @@ char* get(char *dataHolder) {
 
   res = curl_easy_perform(handle);
 
-  if (res != CURLE_OK) {
+  if (res != CURLE_OK || strlen(wholeData) == 0) {
     return "err";
   }
 

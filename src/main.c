@@ -22,34 +22,34 @@ void Handler(int signo)
   exit(0);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
   char *values = malloc(sizeof(char) * 300);
 
   curl_init("http://192.168.178.21:8080");
 
   signal(SIGINT, Handler);
-#if 1
-  pid_t pid, sid;
-  pid = fork();
-  if (pid < 0) {
-    exit(EXIT_FAILURE);
+  if (argc > 1) {
+    pid_t pid, sid;
+    pid = fork();
+    if (pid < 0) {
+      exit(EXIT_FAILURE);
+    }
+
+    if (pid > 0) {
+      exit(EXIT_SUCCESS);
+    }
+
+    umask(0);
+
+    if ((sid = setsid()) < 0) {
+      exit(EXIT_FAILURE);
+    }
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
   }
-
-  if (pid > 0) {
-    exit(EXIT_SUCCESS);
-  }
-
-  umask(0);
-
-  if ((sid = setsid()) < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  close(STDIN_FILENO);
-  close(STDOUT_FILENO);
-  close(STDERR_FILENO);
-#endif
   EPD_INIT();
   int epd_part_refresh_init_done = 0;
   int epd_full_init_done = 0;
@@ -76,7 +76,7 @@ int main(void)
     char *token = strtok(values, "\n");
 
     while (token) {
-      snprintf(cpuInfo[pos], strlen(token) + 4, "%sC", token);
+      snprintf(cpuInfo[pos], strlen(token) + 4, "%s", token);
       token = strtok(NULL, "\n");
       pos++;
     }
