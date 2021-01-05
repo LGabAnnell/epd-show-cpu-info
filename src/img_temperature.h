@@ -1,3 +1,5 @@
+#include "epd_image_struct.h"
+
 ImageDimensions IMG_TEMPERATURE_DIM = {
   .width = 22,
   .height = 42

@@ -30,11 +30,11 @@ char* get(char *dataHolder) {
 
   res = curl_easy_perform(handle);
 
+  printf("%s\n", wholeData);
+
   if (res != CURLE_OK || strlen(wholeData) == 0) {
     return "err";
   }
 
   return "OK";
 }
-
-

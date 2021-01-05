@@ -1,9 +1,9 @@
-﻿#include <stdlib.h>     //exit()
+﻿#include <stdlib.h>
 #include <string.h>
-#include <signal.h>     //signal()
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "EPD_Test.h"   //Examples
+#include "EPD_Test.h"
 #include "EPD_2in13_V2.h"
 
 extern char* get(char *);
@@ -88,8 +88,12 @@ int main(int argc, char **argv)
     }
 
     paintScreen(cpuInfo);
-    sleep(5);
+    sleep(25);
   }
   free(values);
+  for (int i = 0; i < 4; i++) {
+    free(cpuInfo[i]);
+  }
+  free(cpuInfo);
   return 0;
 }
