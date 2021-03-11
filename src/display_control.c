@@ -12,6 +12,7 @@
 #define SCREEN_HEIGHT 122
 #define FONT_USED Font24
 void drawSun(void);
+void paintOnlyTime(void);
 
 static int timeTextStart;
 static int timeTextEnd;
@@ -127,13 +128,28 @@ void EPD_INIT_FULL() {
   EPD_2IN13_V2_Clear();
 }
 
-void drawImageAt(int xSize, const char imgData[][xSize], int xStart, int yStart, int imgXLen, int imgYLen) {
+void drawImageAt(int xSize, char imgData[][xSize], int xStart, int yStart, int imgXLen, int imgYLen) {
   for (int i = 0; i < imgYLen; i++) {
     for (int j = 0; j < imgXLen; j++) {
       Paint_DrawPoint(j + xStart, i + yStart, imgData[i][j] == '1' ? WHITE : BLACK, 
           DOT_PIXEL_1X1, DOT_FILL_RIGHTUP);
     }
   }
+}
+
+void paintOnlyTime() {
+  paintTime();
+  drawImageAt(
+      IMG_FIRE_DIM.width, IMG_FIRE, timeTextStart - 10 - IMG_FIRE_DIM.width, 
+      SCREEN_HEIGHT / 2 - IMG_FIRE_DIM.height / 2, 
+      IMG_FIRE_DIM.width, IMG_FIRE_DIM.height);
+  drawImageAt(
+      IMG_TEMPERATURE_DIM.width, IMG_TEMPERATURE, timeTextEnd + 10, 
+      SCREEN_HEIGHT / 2 - IMG_TEMPERATURE_DIM.height / 2, 
+      IMG_TEMPERATURE_DIM.width, IMG_TEMPERATURE_DIM.height);
+
+  EPD_2IN13_V2_DisplayPart(BlackImage);
+  DEV_Delay_ms(500);
 }
 
 void paintScreen(char **cpuInfo) {

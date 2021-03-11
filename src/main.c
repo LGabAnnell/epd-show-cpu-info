@@ -10,6 +10,7 @@ extern char* get(char *);
 extern void curl_init(char *);
 extern void EPD_INIT_PART(void);
 extern void EPD_INIT_FULL(void);
+extern void paintOnlyTime(void);
 
 void Handler(int signo)
 {
@@ -22,34 +23,55 @@ void Handler(int signo)
   exit(0);
 }
 
-int main(int argc, char **argv)
-{
+void makeDaemon() {
+  pid_t pid, sid;
+  pid = fork();
+  if (pid < 0) {
+     exit(EXIT_FAILURE);
+  }
+
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  if ((sid = setsid()) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+  signal(SIGINT, Handler);
+}
+
+int main(int argc, char **argv) {
+
+  if (argc == 2 && strcmp(argv[1], "put_image") == 0) {
+    EPD_INIT();
+    paintImage();
+    exit(0);
+  }
+
+  if (argc == 2 && strcmp(argv[1], "time") == 0) {
+    makeDaemon();
+    EPD_INIT();
+    EPD_INIT_PART();
+    while (1) {
+      paintOnlyTime();
+      sleep(30);
+    }
+  }
+
   char *values = malloc(sizeof(char) * 300);
 
   curl_init("http://192.168.178.21:8080");
 
-  signal(SIGINT, Handler);
   if (argc > 1) {
-    pid_t pid, sid;
-    pid = fork();
-    if (pid < 0) {
-      exit(EXIT_FAILURE);
-    }
-
-    if (pid > 0) {
-      exit(EXIT_SUCCESS);
-    }
-
-    umask(0);
-
-    if ((sid = setsid()) < 0) {
-      exit(EXIT_FAILURE);
-    }
-
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
+    makeDaemon();
   }
+
   EPD_INIT();
   int epd_part_refresh_init_done = 0;
   int epd_full_init_done = 0;
@@ -88,12 +110,15 @@ int main(int argc, char **argv)
     }
 
     paintScreen(cpuInfo);
-    sleep(25);
+    sleep(5);
   }
+
   free(values);
+
   for (int i = 0; i < 4; i++) {
     free(cpuInfo[i]);
   }
+
   free(cpuInfo);
   return 0;
 }
