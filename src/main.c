@@ -48,6 +48,11 @@ void makeDaemon() {
 
 int main(int argc, char **argv) {
 
+  if (argc == 2 && strcmp(argv[1], "help") == 0) {
+    printf("put_image -> show image, time -> show time, d -> show computer CPU temps\n");
+    exit(0);
+  }
+
   if (argc == 2 && strcmp(argv[1], "put_image") == 0) {
     EPD_INIT();
     paintImage();
@@ -110,7 +115,7 @@ int main(int argc, char **argv) {
     }
 
     paintScreen(cpuInfo);
-    sleep(5);
+    usleep(500000);
   }
 
   free(values);

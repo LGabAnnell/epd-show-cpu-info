@@ -22,7 +22,13 @@ void paintTime() {
   time(&t);
   char s[45];
   struct tm *timeinfo = localtime(&t);
-  sprintf(s, "%02d:%02d", timeinfo->tm_hour + 1, timeinfo->tm_min); 
+
+  int hour = timeinfo->tm_hour + 1;
+  if (hour == 24) {
+    hour = 0;
+  }
+
+  sprintf(s, "%02d:%02d", hour, timeinfo->tm_min); 
   int slen = strlen(s);
 
   int xcoord = SCREEN_WIDTH / 2 - ((FONT_USED.Width * slen) / 2);
